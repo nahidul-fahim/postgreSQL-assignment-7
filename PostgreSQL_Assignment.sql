@@ -111,3 +111,41 @@ VALUES (
         55,
         NULL
     );
+
+-- retrieve the name of all students who enrolled in the 'Next.js' course
+SELECT s.student_name
+FROM
+    students s
+    JOIN enrollment e ON s.student_id = e.student_id
+    JOIN courses c ON e.course_id = c.course_id
+WHERE
+    c.course_name = 'Next.js';
+
+-- Update the status of the student with the highest total (frontend_mark + backend_mark) to 'Awarded'.
+UPDATE students
+SET
+    status = 'Awarded'
+WHERE (frontend_mark + backend_mark) = (
+        SELECT MAX(frontend_mark + backend_mark)
+        FROM students
+    );
+
+-- Delete all courses that have no students enrolled.
+DELETE FROM courses
+WHERE
+    course_id NOT IN (
+        SELECT course_id
+        FROM enrollment
+    );
+
+-- Retrieve the names of students using a limit of 2, starting from the 3rd student
+SELECT student_name FROM students LIMIT 2 OFFSET 2;
+
+-- Retrieve the course names and the number of students enrolled in each course.
+SELECT c.course_name, (
+        SELECT COUNT(*)
+        FROM enrollment e
+        WHERE
+            e.course_id = c.course_id
+    ) AS students_enrolled
+FROM courses c;
