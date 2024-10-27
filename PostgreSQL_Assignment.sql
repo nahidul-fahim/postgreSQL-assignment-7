@@ -25,7 +25,7 @@ CREATE TABLE enrollment (
     course_id INT REFERENCES courses (course_id)
 );
 
--- insert data into the students table
+--  insert data into the students table
 INSERT INTO
     students (
         student_name,
@@ -93,7 +93,8 @@ VALUES (1, 1),
     (2, 1),
     (3, 2);
 
--- insert new student record in the students table
+-- Query 1: Insert a new student record into the students table.
+-- Adds a student data into the 'students' table.
 INSERT INTO
     students (
         student_name,
@@ -112,7 +113,8 @@ VALUES (
         NULL
     );
 
--- retrieve the name of all students who enrolled in the 'Next.js' course
+-- Query 2: Retrieve the names of all students enrolled in the 'Next.js' course.
+-- Joins the students, enrollment, and courses tables to filter students enrolled in 'Next.js' course
 SELECT s.student_name
 FROM
     students s
@@ -121,7 +123,8 @@ FROM
 WHERE
     c.course_name = 'Next.js';
 
--- Update the status of the student with the highest total (frontend_mark + backend_mark) to 'Awarded'.
+-- Query 3: Update the status of the student with the highest total marks (frontend_mark + backend_mark) to 'Awarded'.
+-- Calculates the highest total score and updates the status of the student to 'Awarded'
 UPDATE students
 SET
     status = 'Awarded'
@@ -130,7 +133,8 @@ WHERE (frontend_mark + backend_mark) = (
         FROM students
     );
 
--- Delete all courses that have no students enrolled.
+-- Query 4: Delete all courses that have no students enrolled.
+-- Identifies courses without enrollments and deletes them from the courses table
 DELETE FROM courses
 WHERE
     course_id NOT IN (
@@ -138,10 +142,12 @@ WHERE
         FROM enrollment
     );
 
--- Retrieve the names of students using a limit of 2, starting from the 3rd student
+-- Query 5: Retrieve the names of students using a limit of 2, starting from the 3rd student.
+-- Uses LIMIT and OFFSET to fetch the names of students in a paginated system, starting from the 3rd student
 SELECT student_name FROM students LIMIT 2 OFFSET 2;
 
--- Retrieve the course names and the number of students enrolled in each course.
+-- Query 6: Retrieve the course names and the number of students enrolled in each course.
+-- Uses a sub-query to count enrollments for each course, and display the course name and enrollment count
 SELECT c.course_name, (
         SELECT COUNT(*)
         FROM enrollment e
@@ -149,3 +155,11 @@ SELECT c.course_name, (
             e.course_id = c.course_id
     ) AS students_enrolled
 FROM courses c;
+
+-- Query 7: Calculate and display the average age of all students, rounded to two decimal places.
+-- Uses TRUNC to show the average age to two decimal
+SELECT TRUNC(AVG(age), 2) AS average_age FROM students;
+
+-- Query 8: Retrieve the names of students whose email addresses contain 'example.com'.
+-- Uses the LIKE operator to filter students whose email addresses include 'example.com'.
+SELECT student_name FROM students WHERE email LIKE '%example.com%';
